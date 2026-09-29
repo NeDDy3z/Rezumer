@@ -1,44 +1,57 @@
 const detailView = document.getElementById("detail");
 const listView = document.getElementById("list");
+const searchInput = document.getElementById("search");
+const sortSelect = document.getElementById("sort");
+
+const SORTS = {
+  newest: (a, b) => b.updatedAt - a.updatedAt,
+  oldest: (a, b) => a.updatedAt - b.updatedAt,
+  az: (a, b) => label(a).localeCompare(label(b), undefined, { numeric: true }),
+  za: (a, b) => label(b).localeCompare(label(a), undefined, { numeric: true }),
+};
+
+searchInput.addEventListener("input", showList);
+sortSelect.addEventListener("change", showList);
 
 init();
 
 async function init() {
   const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
   const entries = await loadEntries();
-  const here = entries.find((entry) => pageAddress(entry.url) === pageAddress(tab.url));
-  if (here) showDetail(here, tab);
-  else showList(entries);
+  const here = entries
+    .filter((entry) => pageAddress(entry.url) === pageAddress(tab.url))
+    .sort(SORTS.newest)[0];
+  if (here) showDetail(here);
+  else showList();
 }
 
 async function loadEntries() {
   const items = await browser.storage.local.get();
   return Object.entries(items)
     .filter(([key, entry]) => key.startsWith("video:") && entry.url)
-    .map(([key, entry]) => ({ key, ...entry }))
-    .sort((a, b) => b.updatedAt - a.updatedAt);
+    .map(([key, entry]) => ({ key, ...entry }));
 }
 
-function showDetail(entry, tab) {
+function showDetail(entry) {
   document.getElementById("title").textContent = label(entry);
   document.getElementById("player").textContent = entry.player ?? "";
   document.getElementById("time").textContent = formatTime(entry.time);
 
-  document.getElementById("resume").addEventListener("click", async () => {
-    await setPendingResume(entry);
-    await browser.tabs.sendMessage(tab.id, { type: "resume", key: entry.key }).catch(() => {});
-    window.close();
-  });
   document.getElementById("clear").addEventListener("click", async () => {
     await browser.storage.local.remove(entry.key);
-    showList(await loadEntries());
+    showList();
   });
-  document.getElementById("show-list").addEventListener("click", async () => showList(await loadEntries()));
+  document.getElementById("show-list").addEventListener("click", showList);
 
   detailView.hidden = false;
 }
 
-function showList(entries) {
+async function showList() {
+  const words = searchInput.value.toLowerCase().split(/\s+/).filter(Boolean);
+  const entries = (await loadEntries())
+    .filter((entry) => words.every((word) => label(entry).toLowerCase().includes(word)))
+    .sort(SORTS[sortSelect.value]);
+
   const list = document.getElementById("entries");
   const template = document.getElementById("entry-template");
   list.replaceChildren();
@@ -48,24 +61,21 @@ function showList(entries) {
     item.querySelector("h2").textContent = label(entry);
     item.querySelector(".muted").textContent = entry.player ?? "";
     item.querySelector(".play").addEventListener("click", async () => {
-      await setPendingResume(entry);
       await browser.tabs.update({ url: entry.url });
       window.close();
     });
     item.querySelector(".delete").addEventListener("click", async () => {
       await browser.storage.local.remove(entry.key);
-      showList(await loadEntries());
+      showList();
     });
     list.append(item);
   }
 
-  document.getElementById("empty").hidden = entries.length > 0;
+  const empty = document.getElementById("empty");
+  empty.textContent = words.length ? "No matches." : "Nothing watched yet.";
+  empty.hidden = entries.length > 0;
   detailView.hidden = true;
   listView.hidden = false;
-}
-
-function setPendingResume(entry) {
-  return browser.storage.local.set({ pendingResume: { key: entry.key, time: entry.time, at: Date.now() } });
 }
 
 function label(entry) {

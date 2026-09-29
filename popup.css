@@ -56,25 +56,38 @@ h1, h2, .muted {
   font-variant-numeric: tabular-nums;
 }
 
-#resume {
-  width: 100%;
-  padding: 10px;
-  border: 0;
-  border-radius: 6px;
-  background: #e11d48;
-  color: #fff;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
+.controls {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
 }
 
-#resume:hover {
-  background: #be123c;
+.controls input,
+.controls select {
+  height: 30px;
+  border: 1px solid #3f3f46;
+  border-radius: 6px;
+  background: #27272a;
+  color: #f4f4f5;
+  font: inherit;
+  font-size: 13px;
+}
+
+.controls input {
+  flex: 1;
+  min-width: 0;
+  padding: 0 8px;
+}
+
+.controls input:focus,
+.controls select:focus {
+  outline: none;
+  border-color: #71717a;
 }
 
 .link {
   display: block;
-  margin: 10px auto 0;
+  margin: 0 auto;
   padding: 0;
   border: 0;
   background: none;

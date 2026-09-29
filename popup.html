@@ -18,11 +18,19 @@
       </div>
       <span id="time"></span>
     </div>
-    <button id="resume">Resume</button>
     <button id="clear" class="link">Clear</button>
   </main>
 
   <main id="list" hidden>
+    <div class="controls">
+      <input id="search" type="search" placeholder="Search">
+      <select id="sort">
+        <option value="newest">Newest</option>
+        <option value="oldest">Oldest</option>
+        <option value="az">A-Z</option>
+        <option value="za">Z-A</option>
+      </select>
+    </div>
     <ul id="entries"></ul>
     <p id="empty" class="muted" hidden>Nothing watched yet.</p>
   </main>
@@ -33,7 +41,7 @@
         <h2></h2>
         <p class="muted"></p>
       </div>
-      <button class="icon play" title="Resume">
+      <button class="icon play" title="Open">
         <svg viewBox="0 0 16 16"><path d="M5 3l8 5-8 5z" class="filled"/></svg>
       </button>
       <button class="icon delete" title="Delete">

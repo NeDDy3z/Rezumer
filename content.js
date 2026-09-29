@@ -1,5 +1,4 @@
 const SAVE_INTERVAL_MS = 5000;
-const PENDING_RESUME_TTL_MS = 10 * 60 * 1000;
 const MIN_DURATION_S = 120;
 const END_MARGIN_S = 60;
 
@@ -20,25 +19,11 @@ document.addEventListener("pause", (event) => {
   if (isWatchedVideo(event.target)) save(event.target);
 }, true);
 
-document.addEventListener("loadedmetadata", (event) => {
-  if (isLongVideo(event.target)) resumeIfPending(event.target);
-}, true);
-
-browser.runtime.onMessage.addListener((message) => {
-  if (message.type !== "resume" || message.key !== key) return;
-  const video = [...document.querySelectorAll("video")].find(isLongVideo);
-  if (video) resumeIfPending(video);
-});
-
 if (window === window.top) openPopupIfSaved();
-
-function isLongVideo(element) {
-  return element instanceof HTMLVideoElement && element.duration >= MIN_DURATION_S;
-}
 
 // Muted videos are usually autoplaying backgrounds or previews, not something you're watching.
 function isWatchedVideo(element) {
-  return isLongVideo(element) && !element.muted;
+  return element instanceof HTMLVideoElement && element.duration >= MIN_DURATION_S && !element.muted;
 }
 
 function save(video) {
@@ -52,20 +37,11 @@ function save(video) {
   });
 }
 
-async function resumeIfPending(video) {
-  const { pendingResume } = await browser.storage.local.get("pendingResume");
-  if (pendingResume?.key !== key || Date.now() - pendingResume.at > PENDING_RESUME_TTL_MS) return;
-  await browser.storage.local.remove("pendingResume");
-  video.currentTime = pendingResume.time;
-  video.play().catch(() => {});
-}
-
 async function openPopupIfSaved() {
   const items = await browser.storage.local.get();
-  const resumeStarted = Date.now() - (items.pendingResume?.at ?? 0) < PENDING_RESUME_TTL_MS;
   const here = pageAddress(location.href);
   const saved = Object.entries(items).some(([k, entry]) => k.startsWith("video:") && pageAddress(entry.url) === here);
-  if (saved && !resumeStarted) browser.runtime.sendMessage({ type: "openPopup" });
+  if (saved) browser.runtime.sendMessage({ type: "openPopup" });
 }
 
 function pageAddress(url) {
