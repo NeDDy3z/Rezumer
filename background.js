@@ -3,16 +3,39 @@ const EPISODE_PATTERNS = [
   /^(.*?)\bSeason\s*(\d{1,2})[\s,._-]*Episode\s*(\d{1,3})\b/i,
 ];
 const RELEASE_JUNK = /\b(?:\d{3,4}p|WEB(?:-?DL|Rip)?|BluRay|BDRip|HDTV|DVDRip|x26[45]|HEVC|AAC|mkv|mp4)\b.*$/i;
-const KNOWN_PLAYERS = ["filemoon", "vidmoly", "mixdrop", "voe", "youtube"];
 
 browser.runtime.onMessage.addListener((message, sender) => {
   if (message.type === "save") save(message, sender);
-  if (message.type === "openPopup" && sender.tab.active) {
-    browser.action.openPopup().catch(() => {});
-  }
+  if (message.type === "pageOpened") openPopupIfSaved(sender.tab);
 });
 
+// YouTube and Twitch switch videos without a page load.
+browser.webNavigation.onHistoryStateUpdated.addListener(async ({ tabId, frameId }) => {
+  if (frameId === 0) openPopupIfSaved(await browser.tabs.get(tabId));
+});
+
+async function openPopupIfSaved(tab) {
+  if (!tab.active) return;
+  const items = await browser.storage.local.get();
+  const here = pageAddress(tab.url);
+  const saved = Object.entries(items)
+    .filter(([key, entry]) => key.startsWith("video:") && pageAddress(entry.url) === here)
+    .map(([key, entry]) => ({ key, ...entry }))
+    .sort((a, b) => b.updatedAt - a.updatedAt)[0];
+  if (!saved) return;
+
+  // Firefox for Android can't open the popup from code, so the page shows its own card instead.
+  const { os } = await browser.runtime.getPlatformInfo();
+  if (os === "android") {
+    const resumable = RESUMABLE_PLAYERS.includes(saved.player);
+    browser.tabs.sendMessage(tab.id, { type: "showCard", entry: saved, resumable }, { frameId: 0 }).catch(() => {});
+  } else {
+    browser.action.openPopup().catch(() => {});
+  }
+}
+
 async function save({ key, time, frameTitle, host }, sender) {
+  if (sender.tab.incognito) return;
   const { [key]: saved } = await browser.storage.local.get(key);
   if (saved?.time >= time) return;
   browser.storage.local.set({
@@ -32,7 +55,7 @@ async function playerName(sender, host) {
   const frames = await browser.webNavigation.getAllFrames({ tabId: sender.tab.id });
   let frame = frames.find((f) => f.frameId === sender.frameId);
   while (frame) {
-    const name = KNOWN_PLAYERS.find((player) => frame.url.includes(player));
+    const name = playerFromUrl(frame.url);
     if (name) return name;
     frame = frames.find((f) => f.frameId === frame.parentFrameId);
   }
@@ -56,11 +79,12 @@ function describe(...titles) {
 }
 
 function clean(text) {
+  const isFileName = !text.trim().includes(" ");
+  if (isFileName) text = text.replace(/[._]+/g, " ").replace(RELEASE_JUNK, "");
   return text
-    .replace(/[._]+/g, " ")
-    .replace(RELEASE_JUNK, "")
+    .replace(/^\(\d+\)\s*/, "")
     .replace(/^[\s:\u2013\u2014-]+/, "")
-    .split(/\s*\|\s*|\s[\u2013\u2014]\s|\s-\s(?:watch|online|free|stream)/i)[0]
+    .split(/\s*\|\s*|\s[\u2013\u2014]\s|\s-\s(?:watch|online|free|stream)|\s-\s(?:youtube|\S+\son\stwitch)$/i)[0]
     .replace(/^[\s:-]+|[\s:-]+$/g, "")
     .trim();
 }

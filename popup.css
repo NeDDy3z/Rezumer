@@ -1,29 +1,39 @@
 body {
   margin: 0;
   padding: 16px;
-  width: 300px;
+  width: 375px;
   background: #18181b;
   color: #f4f4f5;
   font: 14px system-ui, sans-serif;
 }
 
 .muted {
-  margin: 4px 0 0;
+  margin: -2px 0 0;
   color: #a1a1aa;
   font-size: 12px;
 }
 
-.toolbar {
+.header {
   display: flex;
-  justify-content: flex-end;
-  margin: -8px -8px 4px 0;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  margin-bottom: 12px;
+}
+
+.header h1 {
+  flex: 1;
+}
+
+.push-right {
+  margin-left: auto;
 }
 
 .row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .info {
@@ -51,26 +61,47 @@ h1, h2, .muted {
 }
 
 #time {
-  font-size: 26px;
+  line-height: 1;
+  margin-top: -1.25px;
+  font-size: 28px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 
-.controls {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 8px;
+#resume {
+  width: 100%;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: #e11d48;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#resume:hover {
+  background: #be123c;
+}
+
+#resume[hidden] {
+  display: none;
 }
 
 .controls input,
 .controls select {
-  height: 30px;
+  height: 32px;
   border: 1px solid #3f3f46;
-  border-radius: 6px;
+  border-radius: 8px;
   background: #27272a;
   color: #f4f4f5;
   font: inherit;
   font-size: 13px;
+}
+
+.controls select {
+  padding: 0 8px;
 }
 
 .controls input {
@@ -85,34 +116,22 @@ h1, h2, .muted {
   border-color: #71717a;
 }
 
-.link {
-  display: block;
-  margin: 0 auto;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: #a1a1aa;
-  font: inherit;
-  font-size: 12px;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.link:hover {
-  color: #f4f4f5;
-}
-
 .icon {
   display: grid;
+  flex: none;
   place-items: center;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   padding: 0;
   border: 0;
-  border-radius: 6px;
+  border-radius: 8px;
   background: #27272a;
   color: #d4d4d8;
   cursor: pointer;
+}
+
+.icon[hidden] {
+  display: none;
 }
 
 .icon:hover {
@@ -121,8 +140,8 @@ h1, h2, .muted {
 }
 
 .icon svg {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.8;
@@ -154,8 +173,12 @@ ul {
 li {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 0;
+  gap: 8px;
+  padding: 12px 0;
+}
+
+li:first-child {
+  padding-top: 0;
 }
 
 li + li {
@@ -163,9 +186,122 @@ li + li {
 }
 
 li .info {
-  margin-right: 6px;
+  margin-right: 4px;
 }
 
 #empty {
   margin: 0;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #27272a;
+  font-size: 13px;
+}
+
+.status p {
+  flex: 1;
+  margin: 0;
+}
+
+.dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+}
+
+.status.missing .dot {
+  background: #f59e0b;
+}
+
+.small {
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: #e11d48;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.small:hover {
+  background: #be123c;
+}
+
+.small[hidden] {
+  display: none;
+}
+
+.setting {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #27272a;
+}
+
+.setting.disabled {
+  opacity: 0.45;
+}
+
+.switch {
+  appearance: none;
+  position: relative;
+  flex: none;
+  width: 34px;
+  height: 20px;
+  margin: 0;
+  border-radius: 10px;
+  background: #3f3f46;
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #a1a1aa;
+}
+
+footer {
+  margin-top: 12px;
+}
+
+footer .muted {
+  white-space: normal;
+}
+
+footer a {
+  display: inline-block;
+  margin-top: 8px;
+  color: #f4f4f5;
+  font-size: 12px;
+}
+
+footer a:hover {
+  color: #fb7185;
+}
+
+/* Firefox for Android opens the popup as a full page. The 320px viewport in popup.html scales it up to fit. */
+@media (hover: none) and (pointer: coarse) {
+  body {
+    width: auto;
+  }
+
+  ul {
+    max-height: none;
+  }
 }

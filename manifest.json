@@ -1,20 +1,42 @@
 {
   "manifest_version": 3,
   "name": "Rezumer",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Automatically saves where you stopped watching and resumes from there.",
+  "homepage_url": "https://github.com/NeDDy3z/Rezumer",
+  "icons": {
+    "48": "icons/play.svg",
+    "96": "icons/play.svg"
+  },
   "permissions": [
     "storage",
     "webNavigation"
   ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "background": {
     "scripts": [
+      "sites.js",
       "background.js"
     ]
   },
   "action": {
     "default_title": "Rezumer",
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": "icons/play.svg",
+    "theme_icons": [
+      {
+        "light": "icons/play-white.svg",
+        "dark": "icons/play-black.svg",
+        "size": 16
+      },
+      {
+        "light": "icons/play-white.svg",
+        "dark": "icons/play-black.svg",
+        "size": 32
+      }
+    ]
   },
   "content_scripts": [
     {
@@ -22,6 +44,7 @@
         "<all_urls>"
       ],
       "js": [
+        "sites.js",
         "content.js"
       ],
       "all_frames": true,
