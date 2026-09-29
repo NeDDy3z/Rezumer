@@ -1,0 +1,158 @@
+body {
+  margin: 0;
+  padding: 16px;
+  width: 300px;
+  background: #18181b;
+  color: #f4f4f5;
+  font: 14px system-ui, sans-serif;
+}
+
+.muted {
+  margin: 4px 0 0;
+  color: #a1a1aa;
+  font-size: 12px;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin: -8px -8px 4px 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+h1, h2 {
+  margin: 0;
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 16px;
+}
+
+h2 {
+  font-size: 14px;
+}
+
+h1, h2, .muted {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+#time {
+  font-size: 26px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+#resume {
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  border-radius: 6px;
+  background: #e11d48;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#resume:hover {
+  background: #be123c;
+}
+
+.link {
+  display: block;
+  margin: 10px auto 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #a1a1aa;
+  font: inherit;
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link:hover {
+  color: #f4f4f5;
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: #27272a;
+  color: #d4d4d8;
+  cursor: pointer;
+}
+
+.icon:hover {
+  background: #3f3f46;
+  color: #fff;
+}
+
+.icon svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon svg .filled {
+  fill: currentColor;
+}
+
+.icon.play {
+  background: #e11d48;
+  color: #fff;
+}
+
+.icon.play:hover {
+  background: #be123c;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0;
+}
+
+li + li {
+  border-top: 1px solid #27272a;
+}
+
+li .info {
+  margin-right: 6px;
+}
+
+#empty {
+  margin: 0;
+}

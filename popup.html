@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main id="detail" hidden>
+    <div class="toolbar">
+      <button id="show-list" class="icon" title="All watched">
+        <svg viewBox="0 0 16 16"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+      </button>
+    </div>
+    <div class="row">
+      <div class="info">
+        <h1 id="title"></h1>
+        <p id="player" class="muted"></p>
+      </div>
+      <span id="time"></span>
+    </div>
+    <button id="resume">Resume</button>
+    <button id="clear" class="link">Clear</button>
+  </main>
+
+  <main id="list" hidden>
+    <ul id="entries"></ul>
+    <p id="empty" class="muted" hidden>Nothing watched yet.</p>
+  </main>
+
+  <template id="entry-template">
+    <li>
+      <div class="info">
+        <h2></h2>
+        <p class="muted"></p>
+      </div>
+      <button class="icon play" title="Resume">
+        <svg viewBox="0 0 16 16"><path d="M5 3l8 5-8 5z" class="filled"/></svg>
+      </button>
+      <button class="icon delete" title="Delete">
+        <svg viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+      </button>
+    </li>
+  </template>
+
+  <script src="popup.js"></script>
+</body>
+</html>
