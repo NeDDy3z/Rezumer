@@ -74,11 +74,11 @@ None. The add-on declares no data collection (`data_collection_permissions: none
 ## 5. Images
 
 ### Icon
-Taken from the manifest (`icons/play.svg`).
+Upload `icon-128.png` (128x128 PNG, source `icon.svg`).
 
 ### Screenshots
-1. `screenshots/1-current-page.png` - "Popup on a page you've started watching"
-2. `screenshots/2-watch-list.png` - "Everything you've watched, with search and sorting"
+1. `screenshots/1-current-page.png` - "Pick up where you left off"
+2. `screenshots/2-watch-list.png` - "Everything you've watched"
 
 ## 6. Version release notes (1.0.0)
 First release.
